@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Obras Inducidas - Tramo II</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
@@ -63,12 +64,77 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .utm-row{background:#f8f9fa;border-radius:6px;padding:8px 10px;margin-top:4px}
 .utm-label{font-size:10px;color:#888;text-transform:uppercase;letter-spacing:0.3px}
 .utm-val{font-size:13px;color:#1a73e8;font-weight:600;font-family:'Consolas',monospace}
+
+/* ── Botón flotante toggle panel (solo mobile) ── */
+.panel-toggle{display:none;position:fixed;bottom:90px;right:14px;z-index:1003;background:#1a73e8;color:#fff;border:none;border-radius:50%;width:48px;height:48px;font-size:22px;cursor:pointer;box-shadow:0 3px 12px rgba(0,0,0,0.35);align-items:center;justify-content:center;transition:background 0.2s}
+.panel-toggle:hover{background:#1557b0}
+
+/* ── RESPONSIVE MOBILE ── */
+@media(max-width:640px){
+  /* Header: fila única, sin wrap */
+  .header{
+    padding:8px 10px;
+    flex-wrap:nowrap;
+    gap:6px;
+    align-items:center;
+    min-height:56px
+  }
+  .header h1{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
+  .header .subtitle{display:none}
+  .stats{gap:4px;flex-shrink:0}
+  .stat{padding:3px 6px}
+  .stat-num{font-size:14px}
+  .stat-label{font-size:8px}
+
+  /* Mapa: empieza debajo del header */
+  #map{margin-top:56px;height:calc(100vh - 56px)}
+
+  /* Panel como bottom drawer */
+  .panel{
+    position:fixed;bottom:0;left:0;right:0;
+    width:100%;max-width:100%;
+    top:auto;
+    max-height:60vh;
+    border-radius:16px 16px 0 0;
+    transform:translateY(100%);
+    transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    z-index:1002;
+    box-shadow:0 -4px 20px rgba(0,0,0,0.18)
+  }
+  .panel::before{content:'';display:block;width:36px;height:4px;background:#ddd;border-radius:2px;margin:0 auto 12px}
+  .panel.open{transform:translateY(0)}
+
+  /* Botón toggle visible */
+  .panel-toggle{display:flex}
+
+  /* Leyenda compacta: arriba a la izquierda para no tapar el drawer */
+  .legend{
+    position:fixed;
+    top:66px;left:8px;
+    bottom:auto;
+    max-width:140px;
+    padding:8px 10px;
+    z-index:1000
+  }
+  .legend h3{font-size:11px;margin-bottom:6px}
+  .legend-text{font-size:10px}
+  .legend-count{display:none}
+
+  /* Modal a pantalla completa por abajo */
+  .overlay{align-items:flex-end}
+  .info-modal{
+    width:100%;max-width:100%;
+    border-radius:20px 20px 0 0;
+    max-height:88vh;
+    overflow-y:auto
+  }
+}
 </style>
 </head>
 <body>
 <div class="header">
 <div>
-<h1>Obras Inducidas - Tramo II</h1>
+<h1>🏗️ Obras Inducidas - Tramo II</h1>
 <div class="subtitle">Proyecto Ferroviario | Guanajuato, Mexico</div>
 </div>
 <div class="stats">
@@ -124,6 +190,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <h3 style="margin-top:14px">Municipios</h3>
 <div class="municipio-badges" id="municipio-badges"></div>
 </div>
+<button class="panel-toggle" id="panel-toggle" onclick="togglePanel()" title="Filtros">⚙</button>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeInfo()">
 <div class="info-modal">
 <div class="info-header">
@@ -215,6 +282,12 @@ document.getElementById('overlay').classList.add('active');
 
 function closeInfo(){document.getElementById('overlay').classList.remove('active')}
 function clearMap(){layers.forEach(function(l){map.removeLayer(l)});markers.forEach(function(m){map.removeLayer(m)});layers=[];markers=[]}
+
+function togglePanel(){
+  var p=document.querySelector('.panel');
+  p.classList.toggle('open');
+  document.getElementById('panel-toggle').textContent=p.classList.contains('open')?'✕':'⚙';
+}
 
 function applyFilters(){
 clearMap();
