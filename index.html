@@ -241,6 +241,7 @@ document.getElementById('critico-count').textContent=f.filter(function(o){return
 f.forEach(function(o){
 var c=getColor(o.proyecto),cr=o.criticidad==='SI';
 var il=(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin);
+if(o.proyecto==='Servicios municipales')il=false;
 if(il){
 var ln=L.polyline([[o.lat_ini,o.lon_ini],[o.lat_fin,o.lon_fin]],{color:c,weight:cr?4:2.5,opacity:0.85,dashArray:cr?null:'5 5'}).addTo(map);
 ln.on('click',function(){showInfo(o)});layers.push(ln);
