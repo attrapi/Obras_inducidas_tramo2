@@ -333,7 +333,7 @@ m.on('click',function(){showInfo(o)});markers.push(m);
 }
 });
 if(f.length>0){
-var bn=[];f.forEach(function(o){bn.push([o.lat_ini,o.lon_ini]);if(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin)bn.push([o.lat_fin,o.lon_fin])});
+var bn=[];f.forEach(function(o){if(isNaN(o.lat_ini)||isNaN(o.lon_ini))return;bn.push([o.lat_ini,o.lon_ini]);if(!isNaN(o.lat_fin)&&!isNaN(o.lon_fin)&&(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin))bn.push([o.lat_fin,o.lon_fin]);});
 map.fitBounds(bn,{paddingTopLeft:[250,90],paddingBottomRight:[310,30]});
 }
 }
