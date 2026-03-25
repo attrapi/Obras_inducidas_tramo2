@@ -278,6 +278,7 @@ var rc=o.riesgo==='ALTO'?'alto':o.riesgo==='MEDIO'?'medio':'bajo';
 var cc=o.criticidad==='SI'?'critico':'bajo';
 var ec=estatusClass[o.estatus]||'estatus-identificada';
 b.innerHTML='<div class="info-row"><span class="info-key">Estatus</span><span class="info-val"><span class="estatus-badge '+ec+'">'+o.estatus+'</span></span></div>'
++'<div class="info-row"><span class="info-key">Estado</span><span class="info-val">'+o.estado+'</span></div>'
 +'<div class="info-row"><span class="info-key">Municipio</span><span class="info-val">'+o.municipio+'</span></div>'
 +'<div class="info-row"><span class="info-key">PK</span><span class="info-val">'+o.pk_ini+' a '+o.pk_fin+'</span></div>'
 +'<div class="info-row"><span class="info-key">Tipo activo</span><span class="info-val">'+o.tipo_activo+'</span></div>'
