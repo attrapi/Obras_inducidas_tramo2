@@ -164,12 +164,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div class="filter-group">
 <div class="filter-label">Rango PK</div>
 <div class="pk-slider-wrap">
-<div class="pk-slider-labels"><span id="pk-label-min">PK 36+400</span><span id="pk-label-max">PK 107+000</span></div>
+<div class="pk-slider-labels"><span id="pk-label-min">PK 36+400</span><span id="pk-label-max">PK 108+000</span></div>
 <div class="pk-slider-box">
 <div class="pk-track-bg"></div>
 <div class="pk-track-fill" id="pk-track-fill"></div>
 <input type="range" id="pk-range-min" min="34" max="108" value="36.4" step="0.1" oninput="onPKSlider()" autocomplete="off">
-<input type="range" id="pk-range-max" min="34" max="108" value="107" step="0.1" oninput="onPKSlider()" autocomplete="off">
+<input type="range" id="pk-range-max" min="34" max="108" value="108" step="0.1" oninput="onPKSlider()" autocomplete="off">
 </div>
 </div>
 </div>
@@ -381,7 +381,7 @@ utm_ie:parseFloat(row.UTM_INI_ESTE),utm_in:parseFloat(row.UTM_INI_NORTE)
 };});
 ['filter-proyecto','filter-ente','filter-criticidad','filter-riesgo','filter-estatus'].forEach(function(id){document.getElementById(id).value='TODOS';});
 document.getElementById('pk-range-min').value=36.4;
-document.getElementById('pk-range-max').value=107;
+document.getElementById('pk-range-max').value=108;
 buildLegend();buildFilters();onPKSlider();
 }).catch(function(err){console.error('CSV error:',err);});
 function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open')}
