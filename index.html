@@ -292,7 +292,7 @@ var c=getColor(o.proyecto),cr=o.criticidad==='SI';
 var il=(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin);
 if(o.proyecto==='Servicios municipales')il=false;
 if(il){
-var ln=L.polyline([[o.lat_ini,o.lon_ini],[o.lat_fin,o.lon_fin]],{color:c,weight:cr?4:2.5,opacity:0.85,dashArray:cr?null:'5 5'}).addTo(map);
+var ln=L.polyline([[o.lat_ini,o.lon_ini],[o.lat_fin,o.lon_fin]],{color:c,weight:cr?4:2.5,opacity:0.85}).addTo(map);
 ln.on('click',function(){showInfo(o)});layers.push(ln);
 var a=L.circleMarker([o.lat_ini,o.lon_ini],{radius:cr?5:3,fillColor:c,color:'#fff',weight:1.5,fillOpacity:0.9}).addTo(map);
 var b2=L.circleMarker([o.lat_fin,o.lon_fin],{radius:cr?5:3,fillColor:c,color:'#fff',weight:1.5,fillOpacity:0.9}).addTo(map);
