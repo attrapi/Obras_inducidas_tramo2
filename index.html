@@ -152,6 +152,20 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <option value="TODOS">Todos</option><option value="Identificada">Identificada</option><option value="Gestión / Ejecución">Gestión / Ejecución</option><option value="Concluida">Concluida</option><option value="Suspendida">Suspendida</option>
 </select>
 </div>
+<div class="filter-group">
+<div class="filter-label">Rango PK</div>
+<select class="filter-select" id="filter-pk" onchange="applyFilters()">
+<option value="TODOS">Todos</option>
+<option value="36-40">PK 36+000 – 40+000</option>
+<option value="40-50">PK 40+000 – 50+000</option>
+<option value="50-60">PK 50+000 – 60+000</option>
+<option value="60-70">PK 60+000 – 70+000</option>
+<option value="70-80">PK 70+000 – 80+000</option>
+<option value="80-90">PK 80+000 – 90+000</option>
+<option value="90-100">PK 90+000 – 100+000</option>
+<option value="100-108">PK 100+000 – 108+000</option>
+</select>
+</div>
 </div>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeInfo()">
 <div class="info-modal">
@@ -255,12 +269,16 @@ var fe=document.getElementById('filter-ente').value;
 var fc=document.getElementById('filter-criticidad').value;
 var fr=document.getElementById('filter-riesgo').value;
 var fst=document.getElementById('filter-estatus').value;
+var fpk=document.getElementById('filter-pk').value;
+function parsePK(pk){var p=pk.replace(/\s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
+var pkRanges={'36-40':[36000,40000],'40-50':[40000,50000],'50-60':[50000,60000],'60-70':[60000,70000],'70-80':[70000,80000],'80-90':[80000,90000],'90-100':[90000,100000],'100-108':[100000,108000]};
 var f=obras.filter(function(o){
 if(fp!=='TODOS'&&o.proyecto!==fp)return false;
 if(fe!=='TODOS'&&o.ente!==fe)return false;
 if(fc!=='TODOS'&&o.criticidad!==fc)return false;
 if(fr!=='TODOS'&&o.riesgo!==fr)return false;
 if(fst!=='TODOS'&&o.estatus!==fst)return false;
+if(fpk!=='TODOS'){var r=pkRanges[fpk];var ini=parsePK(o.pk_ini),fin=parsePK(o.pk_fin||o.pk_ini);if(fin<r[0]||ini>r[1])return false;}
 return true;
 });
 document.getElementById('total-count').textContent=f.length;
