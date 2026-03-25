@@ -70,12 +70,30 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .switch.on{background:#e53935}
 .switch-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;background:#fff;border-radius:50%;transition:left 0.2s}
 .switch.on .switch-knob{left:18px}
+.project-bubble{position:relative;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.45);border-radius:20px;padding:4px 12px;cursor:pointer;font-size:13px;font-weight:600;color:#fff;user-select:none;transition:background 0.2s}
+.project-bubble:hover{background:rgba(255,255,255,0.3)}
+.project-menu{display:none;position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:10px;box-shadow:0 6px 24px rgba(0,0,0,0.15);min-width:170px;overflow:hidden;z-index:2000}
+.project-menu.open{display:block}
+.project-option{padding:9px 16px;font-size:12px;color:#444;cursor:pointer;transition:background 0.15s}
+.project-option:hover{background:#f5f5f5}
+.project-option.active{color:#6b7a1e;font-weight:700;background:#f0f4e0}
 </style>
 </head>
 <body>
 <div class="header">
 <div>
-<h1>Obras Inducidas - Tramo II</h1>
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
+<h1 style="color:#fff;font-size:18px;font-weight:600;margin:0">Obras Inducidas</h1>
+<div class="project-bubble" onclick="toggleProjectMenu(event)">
+<span>Tramo II</span><span style="font-size:10px;opacity:0.8">▾</span>
+<div class="project-menu" id="project-menu">
+<div class="project-option">Tramo I</div>
+<div class="project-option active">Tramo II</div>
+<div class="project-option">Segmento 16-17</div>
+<div class="project-option">Segmento 15b</div>
+</div>
+</div>
+</div>
 <div class="subtitle">Proyecto Ferroviario Querétaro - Irapuato</div>
 </div>
 <div class="stats">
@@ -276,6 +294,8 @@ map.fitBounds(bn,{padding:[100,100]});
 }
 }
 buildLegend();buildFilters();applyFilters();
+function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open')}
+document.addEventListener('click',function(){document.getElementById('project-menu').classList.remove('open')});
 </script>
 </body>
 </html>
