@@ -208,7 +208,7 @@ else{map.removeLayer(kmlLayer);tog.classList.remove('on')}
 }
 
 pkMarkers.forEach(function(pk){
-var icon=L.divIcon({className:'',html:'<div class="pk-label">'+pk.label+'</div>',iconSize:[80,20],iconAnchor:[40,10]});
+var icon=L.divIcon({className:'',html:'<div class="pk-label">'+pk.label+'</div>',iconSize:[80,22],iconAnchor:[40,28]});
 L.marker([pk.lat,pk.lon],{icon:icon,interactive:false}).addTo(map);
 L.circleMarker([pk.lat,pk.lon],{radius:4,fillColor:'#555',color:'#fff',weight:2,fillOpacity:1}).addTo(map);
 });
