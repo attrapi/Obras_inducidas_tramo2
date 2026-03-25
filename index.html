@@ -15,9 +15,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .header h1{color:#fff;font-size:18px;font-weight:600}
 .header .subtitle{color:rgba(255,255,255,0.8);font-size:12px;margin-top:2px}
 .stats{display:flex;gap:16px}
-.stat{text-align:center;padding:4px 14px;background:rgba(255,255,255,0.18);border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
-.stat-num{color:#fff;font-size:20px;font-weight:700}
-.stat-label{color:rgba(255,255,255,0.7);font-size:10px;text-transform:uppercase;letter-spacing:0.5px}
+.stat{text-align:center;padding:4px 10px;background:rgba(255,255,255,0.18);border-radius:8px;border:1px solid rgba(255,255,255,0.12)}
+.stat-num{color:#fff;font-size:17px;font-weight:700}
+.stat-label{color:rgba(255,255,255,0.7);font-size:9px;text-transform:uppercase;letter-spacing:0.4px}
 .legend{position:absolute;bottom:30px;left:14px;z-index:1000;background:#fff;border-radius:12px;padding:14px 16px;box-shadow:0 4px 16px rgba(0,0,0,0.1);max-width:220px}
 .legend h3{color:#222;font-size:13px;margin-bottom:10px;font-weight:600}
 .legend-item{display:flex;align-items:center;gap:8px;margin:5px 0;cursor:pointer;padding:3px 4px;border-radius:4px;transition:background 0.2s}
@@ -97,10 +97,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div class="subtitle">Proyecto Ferroviario Querétaro - Irapuato</div>
 </div>
 <div class="stats">
-<div class="stat"><div class="stat-num" id="total-count">178</div><div class="stat-label">Obras</div></div>
-<div class="stat"><div class="stat-num" id="critico-count">35</div><div class="stat-label">Criticas</div></div>
-<div class="stat"><div class="stat-num" id="municipio-count">7</div><div class="stat-label">Municipios</div></div>
-<div class="stat"><div class="stat-num" id="ente-count">19</div><div class="stat-label">Entes</div></div>
+<div class="stat"><div class="stat-num" id="total-count">0</div><div class="stat-label">Obras</div></div>
+<div class="stat"><div class="stat-num" id="critico-count">0</div><div class="stat-label">Críticas</div></div>
+<div class="stat"><div class="stat-num" id="identificada-count">0</div><div class="stat-label">Identificada</div></div>
+<div class="stat"><div class="stat-num" id="gestion-count">0</div><div class="stat-label">Gest./Ejec.</div></div>
+<div class="stat"><div class="stat-num" id="concluida-count">0</div><div class="stat-label">Concluida</div></div>
+<div class="stat"><div class="stat-num" id="suspendida-count">0</div><div class="stat-label">Suspendida</div></div>
 </div>
 </div>
 <div id="map"></div>
@@ -272,6 +274,10 @@ return true;
 });
 document.getElementById('total-count').textContent=f.length;
 document.getElementById('critico-count').textContent=f.filter(function(o){return o.criticidad==='SI'}).length;
+document.getElementById('identificada-count').textContent=f.filter(function(o){return o.estatus==='Identificada'}).length;
+document.getElementById('gestion-count').textContent=f.filter(function(o){return o.estatus==='Gestión / Ejecución'}).length;
+document.getElementById('concluida-count').textContent=f.filter(function(o){return o.estatus==='Concluida'}).length;
+document.getElementById('suspendida-count').textContent=f.filter(function(o){return o.estatus==='Suspendida'}).length;
 f.forEach(function(o){
 var c=getColor(o.proyecto),cr=o.criticidad==='SI';
 var il=(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin);
