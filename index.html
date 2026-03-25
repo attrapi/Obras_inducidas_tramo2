@@ -32,6 +32,16 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .filter-label{color:#666;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
 .filter-select{width:100%;padding:6px 10px;background:#f0f4f8;color:#333;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;cursor:pointer}
 .filter-select:focus{border-color:#1a73e8}
+.pk-slider-wrap{padding:2px 0}
+.pk-slider-labels{display:flex;justify-content:space-between;margin-bottom:10px;font-size:11px;color:#333;font-weight:600}
+.pk-slider-box{position:relative;height:22px;margin:0 4px}
+.pk-track-bg{position:absolute;top:9px;left:0;right:0;height:4px;background:#ddd;border-radius:2px}
+.pk-track-fill{position:absolute;top:9px;height:4px;background:#6b7a1e;border-radius:2px;pointer-events:none}
+.pk-slider-box input[type=range]{position:absolute;width:100%;top:0;height:22px;background:none;pointer-events:none;-webkit-appearance:none;appearance:none;margin:0;padding:0}
+.pk-slider-box input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#6b7a1e;cursor:pointer;pointer-events:all;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.25)}
+.pk-slider-box input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#6b7a1e;cursor:pointer;pointer-events:all;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,0.25);box-sizing:border-box}
+.pk-slider-box input[type=range]::-webkit-slider-runnable-track{background:none}
+.pk-slider-box input[type=range]::-moz-range-track{background:none}
 .overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);z-index:2000;display:none;align-items:center;justify-content:center}
 .overlay.active{display:flex}
 .info-modal{background:#fff;border-radius:16px;width:520px;max-width:95vw;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.25);animation:modalIn 0.25s ease}
@@ -153,17 +163,15 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 </div>
 <div class="filter-group">
 <div class="filter-label">Rango PK</div>
-<select class="filter-select" id="filter-pk" onchange="applyFilters()">
-<option value="TODOS">Todos</option>
-<option value="36-40">PK 34+000 – 40+000</option>
-<option value="40-50">PK 40+000 – 50+000</option>
-<option value="50-60">PK 50+000 – 60+000</option>
-<option value="60-70">PK 60+000 – 70+000</option>
-<option value="70-80">PK 70+000 – 80+000</option>
-<option value="80-90">PK 80+000 – 90+000</option>
-<option value="90-100">PK 90+000 – 100+000</option>
-<option value="100-108">PK 100+000 – 108+000</option>
-</select>
+<div class="pk-slider-wrap">
+<div class="pk-slider-labels"><span id="pk-label-min">PK 34+000</span><span id="pk-label-max">PK 108+000</span></div>
+<div class="pk-slider-box">
+<div class="pk-track-bg"></div>
+<div class="pk-track-fill" id="pk-track-fill"></div>
+<input type="range" id="pk-range-min" min="34" max="108" value="34" step="1" oninput="onPKSlider()">
+<input type="range" id="pk-range-max" min="34" max="108" value="108" step="1" oninput="onPKSlider()">
+</div>
+</div>
 </div>
 </div>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeInfo()">
@@ -268,16 +276,16 @@ var fe=document.getElementById('filter-ente').value;
 var fc=document.getElementById('filter-criticidad').value;
 var fr=document.getElementById('filter-riesgo').value;
 var fst=document.getElementById('filter-estatus').value;
-var fpk=document.getElementById('filter-pk').value;
-function parsePK(pk){var p=pk.replace(/\s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
-var pkRanges={'36-40':[36000,40000],'40-50':[40000,50000],'50-60':[50000,60000],'60-70':[60000,70000],'70-80':[70000,80000],'80-90':[80000,90000],'90-100':[90000,100000],'100-108':[100000,108000]};
+function parsePK(pk){var p=pk.replace(/s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
+var pkMin=parseInt(document.getElementById('pk-range-min').value)*1000;
+var pkMax=parseInt(document.getElementById('pk-range-max').value)*1000;
 var f=obras.filter(function(o){
 if(fp!=='TODOS'&&o.proyecto!==fp)return false;
 if(fe!=='TODOS'&&o.ente!==fe)return false;
 if(fc!=='TODOS'&&o.criticidad!==fc)return false;
 if(fr!=='TODOS'&&o.riesgo!==fr)return false;
 if(fst!=='TODOS'&&o.estatus!==fst)return false;
-if(fpk!=='TODOS'){var r=pkRanges[fpk];var ini=parsePK(o.pk_ini),fin=parsePK(o.pk_fin||o.pk_ini);if(fin<r[0]||ini>r[1])return false;}
+var ini=parsePK(o.pk_ini),fin=parsePK(o.pk_fin||o.pk_ini);if(fin<pkMin||ini>pkMax)return false;
 return true;
 });
 document.getElementById('total-count').textContent=f.length;
@@ -307,7 +315,18 @@ var bn=[];f.forEach(function(o){bn.push([o.lat_ini,o.lon_ini]);if(o.lat_ini!==o.
 map.fitBounds(bn,{paddingTopLeft:[250,90],paddingBottomRight:[310,30]});
 }
 }
-buildLegend();buildFilters();applyFilters();
+function onPKSlider(){
+var mn=parseInt(document.getElementById('pk-range-min').value);
+var mx=parseInt(document.getElementById('pk-range-max').value);
+if(mn>mx){var t=mn;mn=mx;mx=t;document.getElementById('pk-range-min').value=mn;document.getElementById('pk-range-max').value=mx;}
+document.getElementById('pk-label-min').textContent='PK '+mn+'+000';
+document.getElementById('pk-label-max').textContent='PK '+mx+'+000';
+var pctL=(mn-34)/(108-34)*100,pctR=(mx-34)/(108-34)*100;
+var fill=document.getElementById('pk-track-fill');
+fill.style.left=pctL+'%';fill.style.width=(pctR-pctL)+'%';
+applyFilters();
+}
+buildLegend();buildFilters();onPKSlider();
 function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open')}
 document.addEventListener('click',function(){document.getElementById('project-menu').classList.remove('open')});
 </script>
