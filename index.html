@@ -66,6 +66,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .estatus-suspendida{background:#ffebee;color:#c62828}
 .close-btn{position:absolute;top:14px;right:16px;color:#fff;background:rgba(255,255,255,0.2);border:none;font-size:18px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .close-btn:hover{background:rgba(255,255,255,0.35)}
+.est-ring{position:absolute;border-radius:50%;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%)}
+@keyframes ripple{0%{transform:translate(-50%,-50%) scale(1);opacity:0.9}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
+.est-ring{animation:ripple 1.8s ease-out infinite}
 .municipio-badges{display:flex;flex-wrap:wrap;gap:4px;margin-top:8px}
 .badge{padding:3px 8px;border-radius:10px;font-size:10px;color:#4a5a10;background:#e4ebb8;cursor:pointer;transition:all 0.2s}
 .badge.active{background:#6b7a1e;color:#fff}
@@ -214,6 +217,15 @@ var sz=critical?18:14;
 return L.divIcon({className:'',html:mkSVG(proyecto,sz),iconSize:[sz,sz],iconAnchor:[sz/2,sz/2]});
 }
 var estatusClass={'Identificada':'estatus-identificada','Gestión / Ejecución':'estatus-gestion','Concluida':'estatus-concluida','Suspendida':'estatus-suspendida'};
+var estatusColorMap={'Identificada':'#e53935','Gestión / Ejecución':'#f9a825','Concluida':'#43a047','Suspendida':'#7b1fa2'};
+function getEstIcon(proyecto,estatus,critical){
+var ec=estatusColorMap[estatus]||'#888';
+var sz=critical?18:14;
+var csz=sz+16;
+var svg=mkSVG(proyecto,sz);
+var h='<div style="position:relative;width:'+csz+'px;height:'+csz+'px"><div class="est-ring" style="width:'+csz+'px;height:'+csz+'px;border:2.5px solid '+ec+';"></div><div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)">'+svg+'</div></div>';
+return L.divIcon({className:'',html:h,iconSize:[csz,csz],iconAnchor:[csz/2,csz/2]});
+}
 
 var map=L.map('map',{zoomControl:false}).setView([20.55,-101.0],11);
 L.control.zoom({position:'bottomright'}).addTo(map);
@@ -294,6 +306,7 @@ function clearMap(){layers.forEach(function(l){map.removeLayer(l)});markers.forE
 function applyFilters(){
 clearMap();
 var fp=document.getElementById('filter-proyecto').value;
+var useEst=fp!=='TODOS';
 var fe=document.getElementById('filter-ente').value;
 var fc=document.getElementById('filter-criticidad').value;
 var fr=document.getElementById('filter-riesgo').value;
@@ -317,18 +330,18 @@ document.getElementById('gestion-count').textContent=f.filter(function(o){return
 document.getElementById('concluida-count').textContent=f.filter(function(o){return o.estatus==='Concluida'}).length;
 document.getElementById('suspendida-count').textContent=f.filter(function(o){return o.estatus==='Suspendida'}).length;
 f.forEach(function(o){
-var c=getColor(o.proyecto),cr=o.criticidad==='SI';
+var c=useEst?estatusColorMap[o.estatus]||'#888':getColor(o.proyecto),cr=o.criticidad==='SI';
 var il=(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin);
 if(o.proyecto==='Servicios municipales')il=false;
 if(il){
 var ln=L.polyline([[o.lat_ini,o.lon_ini],[o.lat_fin,o.lon_fin]],{color:c,weight:cr?4:2.5,opacity:0.85}).addTo(map);
 ln.on('click',function(){showInfo(o)});layers.push(ln);
-var a=L.marker([o.lat_ini,o.lon_ini],{icon:getIcon(o.proyecto,cr)}).addTo(map);
-var b2=L.marker([o.lat_fin,o.lon_fin],{icon:getIcon(o.proyecto,cr)}).addTo(map);
+var a=L.marker([o.lat_ini,o.lon_ini],{icon:useEst?getEstIcon(o.proyecto,o.estatus,cr):getIcon(o.proyecto,cr)}).addTo(map);
+var b2=L.marker([o.lat_fin,o.lon_fin],{icon:useEst?getEstIcon(o.proyecto,o.estatus,cr):getIcon(o.proyecto,cr)}).addTo(map);
 a.on('click',function(){showInfo(o)});b2.on('click',function(){showInfo(o)});
 markers.push(a);markers.push(b2);
 }else{
-var m=L.marker([o.lat_ini,o.lon_ini],{icon:getIcon(o.proyecto,cr)}).addTo(map);
+var m=L.marker([o.lat_ini,o.lon_ini],{icon:useEst?getEstIcon(o.proyecto,o.estatus,cr):getIcon(o.proyecto,cr)}).addTo(map);
 m.on('click',function(){showInfo(o)});markers.push(m);
 }
 });
