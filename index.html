@@ -164,12 +164,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div class="filter-group">
 <div class="filter-label">Rango PK</div>
 <div class="pk-slider-wrap">
-<div class="pk-slider-labels"><span id="pk-label-min">PK 34+000</span><span id="pk-label-max">PK 108+000</span></div>
+<div class="pk-slider-labels"><span id="pk-label-min">PK 34+600</span><span id="pk-label-max">PK 107+000</span></div>
 <div class="pk-slider-box">
 <div class="pk-track-bg"></div>
 <div class="pk-track-fill" id="pk-track-fill"></div>
-<input type="range" id="pk-range-min" min="34" max="108" value="34" step="1" oninput="onPKSlider()">
-<input type="range" id="pk-range-max" min="34" max="108" value="108" step="1" oninput="onPKSlider()">
+<input type="range" id="pk-range-min" min="34" max="108" value="34.6" step="0.1" oninput="onPKSlider()">
+<input type="range" id="pk-range-max" min="34" max="108" value="107" step="0.1" oninput="onPKSlider()">
 </div>
 </div>
 </div>
@@ -277,8 +277,8 @@ var fc=document.getElementById('filter-criticidad').value;
 var fr=document.getElementById('filter-riesgo').value;
 var fst=document.getElementById('filter-estatus').value;
 function parsePK(pk){var p=pk.replace(/s/g,'').split('+');return p.length===2?parseFloat(p[0])*1000+parseFloat(p[1]):parseFloat(pk)*1000;}
-var pkMin=parseInt(document.getElementById('pk-range-min').value)*1000;
-var pkMax=parseInt(document.getElementById('pk-range-max').value)*1000;
+var pkMin=Math.round(parseFloat(document.getElementById('pk-range-min').value)*1000);
+var pkMax=Math.round(parseFloat(document.getElementById('pk-range-max').value)*1000);
 var f=obras.filter(function(o){
 if(fp!=='TODOS'&&o.proyecto!==fp)return false;
 if(fe!=='TODOS'&&o.ente!==fe)return false;
@@ -315,12 +315,13 @@ var bn=[];f.forEach(function(o){bn.push([o.lat_ini,o.lon_ini]);if(o.lat_ini!==o.
 map.fitBounds(bn,{paddingTopLeft:[250,90],paddingBottomRight:[310,30]});
 }
 }
+function fmtPK(v){var k=Math.floor(v);var m=Math.round((v-k)*1000);return 'PK '+k+'+'+(m<100?(m<10?'00'+m:'0'+m):m);}
 function onPKSlider(){
-var mn=parseInt(document.getElementById('pk-range-min').value);
-var mx=parseInt(document.getElementById('pk-range-max').value);
+var mn=parseFloat(document.getElementById('pk-range-min').value);
+var mx=parseFloat(document.getElementById('pk-range-max').value);
 if(mn>mx){var t=mn;mn=mx;mx=t;document.getElementById('pk-range-min').value=mn;document.getElementById('pk-range-max').value=mx;}
-document.getElementById('pk-label-min').textContent='PK '+mn+'+000';
-document.getElementById('pk-label-max').textContent='PK '+mx+'+000';
+document.getElementById('pk-label-min').textContent=fmtPK(mn);
+document.getElementById('pk-label-max').textContent=fmtPK(mx);
 var pctL=(mn-34)/(108-34)*100,pctR=(mx-34)/(108-34)*100;
 var fill=document.getElementById('pk-track-fill');
 fill.style.left=pctL+'%';fill.style.width=(pctR-pctL)+'%';
