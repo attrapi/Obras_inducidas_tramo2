@@ -32,10 +32,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .panel h3{color:#222;font-size:13px;margin-bottom:10px;font-weight:600}
 .filter-group{margin-bottom:12px}
 .filter-label{color:#666;font-size:10px;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px}
-.filter-select{width:100%;padding:6px 10px;background:#f0f4f8;color:#333;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;cursor:pointer}
+.filter-select{width:100%;padding:6px 10px;background:#f0f4f8;color:#333;border:1px solid #ddd;border-radius:6px;font-size:12px;outline:none;cursor:pointer;color-scheme:light;-webkit-appearance:auto;appearance:auto}
 .filter-select:focus{border-color:#1a73e8}
 .pk-slider-wrap{padding:2px 0}
-.pk-slider-labels{display:flex;justify-content:space-between;margin-bottom:10px;font-size:11px;color:#333;font-weight:600}
+.pk-slider-labels{display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:#333;font-weight:600}
 .pk-slider-box{position:relative;height:22px;margin:0 4px}
 .pk-track-bg{position:absolute;top:9px;left:0;right:0;height:4px;background:#ddd;border-radius:2px}
 .pk-track-fill{position:absolute;top:9px;height:4px;background:#6b7a1e;border-radius:2px;pointer-events:none}
@@ -103,7 +103,6 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div>
 <div style="display:flex;align-items:center;gap:10px;margin-bottom:2px">
 <h1 style="color:#fff;font-size:18px;font-weight:600;margin:0">Obras Inducidas</h1>
-<button onclick="captureMap()" title="Capturar vista" style="background:rgba(255,255,255,0.2);border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s;flex-shrink:0" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><svg viewBox="0 0 24 24" width="16" height="16" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zm0-8.4a5.2 5.2 0 1 0 0 10.4 5.2 5.2 0 0 0 0-10.4zM9 3l-1.83 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9z"/></svg></button>
 <div class="project-bubble" onclick="toggleProjectMenu(event)">
 <span>Tramo II</span><span style="font-size:10px;opacity:0.8">▾</span>
 <div class="project-menu" id="project-menu">
@@ -116,7 +115,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 </div>
 </div>
 <div class="stats">
-<div class="stat"><div class="stat-num" id="total-count">0</div><div class="stat-label">Obras</div></div>
+<div class="stat" style="display:flex;align-items:center;gap:8px"><div><div class="stat-num" id="total-count">0</div><div class="stat-label">Obras</div></div><button onclick="captureMap()" title="Capturar vista" style="background:rgba(255,255,255,0.2);border:none;cursor:pointer;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s;flex-shrink:0" onmouseover="this.style.background='rgba(255,255,255,0.35)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><svg viewBox="0 0 24 24" width="14" height="14" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M12 15.2A3.2 3.2 0 1 1 12 8.8a3.2 3.2 0 0 1 0 6.4zm0-8.4a5.2 5.2 0 1 0 0 10.4 5.2 5.2 0 0 0 0-10.4zM9 3l-1.83 2H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-3.17L15 3H9z"/></svg></button></div>
 <div class="stat"><div class="stat-num" id="critico-count">0</div><div class="stat-label">Críticas</div></div>
 <div class="stat"><div class="stat-num" id="identificada-count">0</div><div class="stat-label">Identificada</div></div>
 <div class="stat"><div class="stat-num" id="gestion-count">0</div><div class="stat-label">Gestionadas/Ejecutadas</div></div>
@@ -174,13 +173,13 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div class="filter-group">
 <div class="filter-label">Rango PK</div>
 <div class="pk-slider-wrap">
-<div class="pk-slider-labels"><span id="pk-label-min">PK 36+400</span><span id="pk-label-max">PK 108+000</span></div>
 <div class="pk-slider-box">
 <div class="pk-track-bg"></div>
 <div class="pk-track-fill" id="pk-track-fill"></div>
 <input type="range" id="pk-range-min" min="34" max="108" value="36.4" step="0.1" oninput="onPKSlider()" autocomplete="off">
 <input type="range" id="pk-range-max" min="34" max="108" value="108" step="0.1" oninput="onPKSlider()" autocomplete="off">
 </div>
+<div class="pk-slider-labels"><span id="pk-label-min">PK 36+400</span><span id="pk-label-max">PK 108+000</span></div>
 </div>
 </div>
 </div>
