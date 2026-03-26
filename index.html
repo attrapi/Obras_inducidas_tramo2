@@ -66,6 +66,10 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .estatus-suspendida{background:#f3e5f5;color:#6a1b9a}
 .close-btn{position:absolute;top:14px;right:16px;color:#fff;background:rgba(255,255,255,0.2);border:none;font-size:18px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
 .close-btn:hover{background:rgba(255,255,255,0.35)}
+.download-btn{position:absolute;top:14px;right:52px;color:#fff;background:rgba(255,255,255,0.2);border:none;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background 0.2s}
+.download-btn:hover{background:rgba(255,255,255,0.35)}
+.download-btn svg{width:15px;height:15px;fill:#fff}
+@media print{body>*{display:none!important}.print-only{display:block!important;position:static!important;width:100%!important;box-shadow:none!important;border-radius:0!important}}
 .est-ring{position:absolute;border-radius:50%;pointer-events:none;top:50%;left:50%;transform:translate(-50%,-50%)}
 @keyframes ripple{0%{transform:translate(-50%,-50%) scale(1);opacity:0.9}100%{transform:translate(-50%,-50%) scale(2.4);opacity:0}}
 .est-ring{animation:ripple 1.8s ease-out infinite}
@@ -180,6 +184,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeInfo()">
 <div class="info-modal">
 <div class="info-header">
+<button class="download-btn" onclick="printInfo()" title="Descargar PDF"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 16l-5-5h3V4h4v7h3l-5 5zm-7 2h14v2H5v-2z"/></svg></button>
 <button class="close-btn" onclick="closeInfo()">&times;</button>
 <h4 id="info-title"></h4>
 <div class="info-id" id="info-id"></div>
@@ -303,6 +308,22 @@ document.getElementById('overlay').classList.add('active');
 }
 
 function closeInfo(){document.getElementById('overlay').classList.remove('active')}
+function printInfo(){
+  var modal=document.querySelector('.info-modal');
+  var w=window.open('','_blank','width=600,height=800');
+  w.document.write('<!DOCTYPE html><html><head><meta charset="utf-8"><title>Ficha técnica</title><style>body{font-family:Segoe UI,system-ui,sans-serif;margin:0;padding:0}'+
+    '.info-header{padding:12px 20px;background:#1a73e8;color:#fff}.info-header h4{font-size:15px;font-weight:600;color:#fff;margin:0}.info-id{font-size:11px;margin-top:3px;color:rgba(255,255,255,0.85)}'+
+    '.info-body{padding:16px 20px}.info-row{display:flex;justify-content:space-between;align-items:flex-start;padding:5px 0;border-bottom:1px solid #f0f0f0}.info-row:last-child{border:none}'+
+    '.info-key{color:#888;font-size:11px;text-transform:uppercase;letter-spacing:0.4px;flex-shrink:0;width:130px}.info-val{color:#222;font-size:13px;text-align:right;font-weight:500}'+
+    '.estatus-badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:600}'+
+    '.estatus-identificada{background:#ffebee;color:#c62828}.estatus-gestion{background:#fff3e0;color:#e65100}.estatus-concluida{background:#e8f5e9;color:#2e7d32}.estatus-suspendida{background:#f3e5f5;color:#6a1b9a}'+
+    '.utm-row{background:#f8f9fa;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:11px}.utm-label{color:#888;font-size:10px;text-transform:uppercase;margin-bottom:4px}.utm-val{color:#333;font-weight:600}'+
+    '@media print{@page{margin:10mm}}</style></head><body>');
+  w.document.write(modal.innerHTML);
+  w.document.write('</body></html>');
+  w.document.close();
+  w.onload=function(){w.focus();w.print();};
+}
 function clearMap(){layers.forEach(function(l){map.removeLayer(l)});markers.forEach(function(m){map.removeLayer(m)});layers=[];markers=[]}
 
 function applyFilters(){
