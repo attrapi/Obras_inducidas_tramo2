@@ -96,6 +96,36 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 .project-option{padding:9px 16px;font-size:12px;color:#444;cursor:pointer;transition:background 0.15s}
 .project-option:hover{background:#f5f5f5}
 .project-option.active{color:#6b7a1e;font-weight:700;background:#f0f4e0}
+.fab{display:none}
+@media (max-width:768px){
+.header{padding:10px 12px;flex-wrap:wrap;gap:8px;align-items:flex-start}
+.header h1{font-size:15px!important}
+.project-bubble{font-size:11px;padding:3px 10px}
+.stats{gap:8px;flex:1 1 100%;overflow-x:auto;-webkit-overflow-scrolling:touch;flex-wrap:nowrap;padding:2px 0;scrollbar-width:none;justify-content:flex-start}
+.stats::-webkit-scrollbar{display:none}
+.stat{flex-shrink:0;padding:3px 8px}
+.stat-num{font-size:14px}
+.stat-label{font-size:8px}
+.panel{top:135px;right:14px;bottom:14px;left:auto;width:min(320px,calc(100vw - 28px));max-height:none;transform:translateX(calc(100% + 30px));transition:transform 0.3s ease;padding:14px}
+.panel.mobile-open{transform:translateX(0)}
+.legend{top:135px;left:14px;bottom:auto;max-width:min(260px,calc(100vw - 28px));max-height:calc(100vh - 160px);overflow-y:auto;transform:translateX(calc(-100% - 30px));transition:transform 0.3s ease}
+.legend.mobile-open{transform:translateX(0)}
+.fab{display:flex;position:absolute;z-index:1150;width:44px;height:44px;border-radius:50%;background:#6b7a1e;border:none;box-shadow:0 3px 10px rgba(0,0,0,0.3);align-items:center;justify-content:center;cursor:pointer;transition:transform 0.15s,background 0.2s}
+.fab:active{transform:scale(0.92)}
+.fab.active{background:#4a5a10}
+.fab-filters{top:85px;right:14px}
+.fab-legend{top:85px;left:14px}
+.fab svg{width:22px;height:22px;fill:#fff}
+.info-modal{width:96vw;max-height:92vh;overflow-y:auto}
+.info-header{padding:10px 16px}
+.info-header h4{font-size:13px;padding-right:70px}
+.info-body{padding:12px 16px}
+.info-key{min-width:90px;font-size:11px}
+.info-val{font-size:11px;max-width:170px}
+.download-btn{font-size:10px;padding:3px 8px;right:44px;top:10px}
+.close-btn{top:10px;width:26px;height:26px;font-size:16px}
+.pk-slider-labels{font-size:10px}
+}
 </style>
 </head>
 <body>
@@ -184,6 +214,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#f5f5f5}
 </div>
 </div>
 </div>
+<button class="fab fab-filters" id="fab-filters" onclick="toggleMobilePanel()" aria-label="Filtros" title="Filtros"><svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm3 5h10v2H7zm3 5h4v2h-4z"/></svg></button>
+<button class="fab fab-legend" id="fab-legend" onclick="toggleMobileLegend()" aria-label="Leyenda" title="Leyenda"><svg viewBox="0 0 24 24"><circle cx="6" cy="7" r="2"/><rect x="10" y="6" width="10" height="2" rx="1"/><circle cx="6" cy="12" r="2"/><rect x="10" y="11" width="10" height="2" rx="1"/><circle cx="6" cy="17" r="2"/><rect x="10" y="16" width="10" height="2" rx="1"/></svg></button>
 <div class="overlay" id="overlay" onclick="if(event.target===this)closeInfo()">
 <div class="info-modal">
 <div class="info-header">
@@ -385,7 +417,8 @@ if(f.length>0){
 function inMX(la,lo){return la>14&&la<25&&lo>-116&&lo<-85;}
 var bn=[];f.forEach(function(o){if(inMX(o.lat_ini,o.lon_ini))bn.push([o.lat_ini,o.lon_ini]);if(!isNaN(o.lat_fin)&&!isNaN(o.lon_fin)&&inMX(o.lat_fin,o.lon_fin)&&(o.lat_ini!==o.lat_fin||o.lon_ini!==o.lon_fin))bn.push([o.lat_fin,o.lon_fin]);});
 if(bn.length<2){bn=pkMarkers.map(function(p){return[p.lat,p.lon];});}
-map.fitBounds(bn,{paddingTopLeft:[250,90],paddingBottomRight:[310,30]});
+var isMobile=window.innerWidth<=768;
+map.fitBounds(bn,{paddingTopLeft:isMobile?[20,150]:[250,90],paddingBottomRight:isMobile?[20,60]:[310,30]});
 }
 }
 function fmtPK(v){var k=Math.floor(v);var m=Math.round((v-k)*1000);return 'PK '+k+'+'+(m<100?(m<10?'00'+m:'0'+m):m);}
@@ -437,6 +470,27 @@ buildLegend();buildFilters();onPKSlider();
 }).catch(function(err){console.error('CSV error:',err);});
 function toggleProjectMenu(e){e.stopPropagation();document.getElementById('project-menu').classList.toggle('open')}
 document.addEventListener('click',function(){document.getElementById('project-menu').classList.remove('open')});
+function closeMobileDrawers(){
+var p=document.querySelector('.panel'),l=document.querySelector('.legend');
+var fp=document.getElementById('fab-filters'),fl=document.getElementById('fab-legend');
+p.classList.remove('mobile-open');l.classList.remove('mobile-open');
+fp.classList.remove('active');fl.classList.remove('active');
+}
+function toggleMobilePanel(){
+var p=document.querySelector('.panel'),l=document.querySelector('.legend');
+var fp=document.getElementById('fab-filters'),fl=document.getElementById('fab-legend');
+var opening=!p.classList.contains('mobile-open');
+l.classList.remove('mobile-open');fl.classList.remove('active');
+p.classList.toggle('mobile-open',opening);fp.classList.toggle('active',opening);
+}
+function toggleMobileLegend(){
+var p=document.querySelector('.panel'),l=document.querySelector('.legend');
+var fp=document.getElementById('fab-filters'),fl=document.getElementById('fab-legend');
+var opening=!l.classList.contains('mobile-open');
+p.classList.remove('mobile-open');fp.classList.remove('active');
+l.classList.toggle('mobile-open',opening);fl.classList.toggle('active',opening);
+}
+map.on('click',closeMobileDrawers);
 </script>
 </body>
 </html>
